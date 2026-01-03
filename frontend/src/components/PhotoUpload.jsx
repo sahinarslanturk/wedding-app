@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './PhotoUpload.css';
-import { v4 as uuidv4 } from 'uuid';
 
 const PhotoUpload = ({ eventId, userId, onUploadSuccess }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -47,49 +47,37 @@ const PhotoUpload = ({ eventId, userId, onUploadSuccess }) => {
     setError('');
 
     try {
-      // Base64'e çevir (localStorage'ta depolamak için)
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64Data = reader.result;
-        
-        // LocalStorage'tan varolan fotoğrafları oku
-        const allPhotos = JSON.parse(localStorage.getItem('weddingPhotos') || '[]');
-        
-        // Yeni fotoğrafı ekle
-        const newPhoto = {
-          id: uuidv4(),
-          eventId,
-          userId,
-          caption: caption || '',
-          url: base64Data, // Base64 resim verisi
-          uploadedAt: new Date().toISOString(),
-          fileName: selectedFile.name
-        };
-        
-        allPhotos.push(newPhoto);
-        
-        // LocalStorage'a kaydet
-        localStorage.setItem('weddingPhotos', JSON.stringify(allPhotos));
-        
-        setSuccess(true);
-        setSelectedFile(null);
-        setPreview(null);
-        setCaption('');
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('eventId', eventId);
+      formData.append('userId', userId);
+      formData.append('caption', caption);
 
-        // 2 saniye sonra galeriye otomatik git
-        setTimeout(() => {
-          setSuccess(false);
-          onUploadSuccess?.();
-        }, 2000);
-      };
-      
-      reader.readAsDataURL(selectedFile);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await axios.post(`${apiUrl}/api/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setSuccess(true);
+      setSelectedFile(null);
+      setPreview(null);
+      setCaption('');
+
+      // 2 saniye sonra galeriye otomatik git
+      setTimeout(() => {
+        setSuccess(false);
+        onUploadSuccess?.();
+      }, 2000);
     } catch (err) {
-      const errorMessage = err.message || 'Fotoğraf yükleme başarısız oldu';
+      const errorMessage = err.response?.data?.message || err.message || 'Fotoğraf yükleme başarısız oldu';
       setError(`❌ Hata: ${errorMessage}`);
       console.error('Upload error details:', {
+        status: err.response?.status,
         message: err.message,
-        stack: err.stack
+        data: err.response?.data,
+        url: `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/upload`
       });
     } finally {
       setUploading(false);
