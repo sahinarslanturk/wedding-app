@@ -77,7 +77,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Upload photo with ImgBB
+// Upload photo with ImgBB (or base64 as fallback)
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     const { eventId, userId, caption } = req.body;
@@ -86,30 +86,10 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       return res.status(400).json({ message: 'Eksik parametreler' });
     }
 
-    // Upload to ImgBB
-    const formData = new FormData();
     const buffer = req.file.buffer;
-    const blob = new Blob([buffer], { type: req.file.mimetype });
-    formData.append('image', blob, req.file.originalname);
-    formData.append('key', process.env.IMGBB_API_KEY || 'a85bf9e97e5c0f39b7a2b1c3d4e5f6g7');
-
-    let imageUrl;
-    try {
-      const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.data.success) {
-        imageUrl = response.data.data.url;
-      } else {
-        throw new Error('ImgBB upload failed');
-      }
-    } catch (error) {
-      // Fallback: Use base64 data URL (limited to ~1MB)
-      imageUrl = `data:${req.file.mimetype};base64,${buffer.toString('base64')}`;
-    }
+    
+    // Direkt base64 olarak sakla (çok daha hızlı)
+    const imageUrl = `data:${req.file.mimetype};base64,${buffer.toString('base64')}`;
 
     // Save to local database
     const photoId = uuidv4();

@@ -61,12 +61,15 @@ function App() {
       {currentPage === 'qrcode' && (
         <div className="qrcode-page">
           <QRCodeGenerator eventId={WEDDING_EVENT_ID} />
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setCurrentPage('home')}
-          >
-            ← Geri
-          </button>
+          <div style={{ marginTop: '30px', textAlign: 'center' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setCurrentPage('home')}
+              style={{ width: '100%', maxWidth: '300px' }}
+            >
+              ← Ana Sayfaya Dön
+            </button>
+          </div>
         </div>
       )}
 
@@ -77,24 +80,30 @@ function App() {
             userId={uniqueUserId}
             onUploadSuccess={() => setCurrentPage('gallery')}
           />
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setCurrentPage('home')}
-          >
-            ← Geri
-          </button>
+          <div style={{ marginTop: '30px', textAlign: 'center' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setCurrentPage('home')}
+              style={{ width: '100%', maxWidth: '300px' }}
+            >
+              ← Ana Sayfaya Dön
+            </button>
+          </div>
         </div>
       )}
 
       {currentPage === 'gallery' && (
         <div className="gallery-page">
           <PhotoGallery eventId={WEDDING_EVENT_ID} userId={uniqueUserId} />
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setCurrentPage('home')}
-          >
-            ← Geri
-          </button>
+          <div style={{ marginTop: '30px', textAlign: 'center' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setCurrentPage('home')}
+              style={{ width: '100%', maxWidth: '300px' }}
+            >
+              ← Ana Sayfaya Dön
+            </button>
+          </div>
         </div>
       )}
     </div>

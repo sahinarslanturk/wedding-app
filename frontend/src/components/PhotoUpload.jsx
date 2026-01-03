@@ -174,7 +174,7 @@ const PhotoUpload = ({ eventId, userId, onUploadSuccess }) => {
           className="btn btn-success"
           style={{ opacity: uploading ? 0.6 : 1 }}
         >
-          {uploading ? '⏳ Yükleniyor...' : '✓ Yükle'}
+          {uploading ? '⏳ Gönderiliyor...' : '✓ Yükle'}
         </button>
       )}
     </div>
