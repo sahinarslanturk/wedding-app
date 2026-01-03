@@ -43,11 +43,6 @@ const PhotoUpload = ({ eventId, userId, onUploadSuccess }) => {
       return;
     }
 
-    if (!eventId) {
-      setError('Lütfen bir düğün ID\'si girin');
-      return;
-    }
-
     setUploading(true);
     setError('');
 

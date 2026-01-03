@@ -5,7 +5,9 @@ import PhotoUpload from './components/PhotoUpload';
 import PhotoGallery from './components/PhotoGallery';
 
 function App() {
-  const [eventId, setEventId] = useState('');
+  // Sabit event ID - tüm konuklar aynı QR kodu kullanacak
+  const WEDDING_EVENT_ID = 'wedding-2024';
+  
   const [currentPage, setCurrentPage] = useState('home');
   const [uniqueUserId, setUniqueUserId] = useState('');
 
@@ -17,14 +19,6 @@ function App() {
       localStorage.setItem('userId', userId);
     }
     setUniqueUserId(userId);
-
-    // Get event ID from URL params if available
-    const params = new URLSearchParams(window.location.search);
-    const urlEventId = params.get('event');
-    if (urlEventId) {
-      setEventId(urlEventId);
-      setCurrentPage('upload');
-    }
   }, []);
 
   return (
@@ -60,7 +54,7 @@ function App() {
 
       {currentPage === 'qrcode' && (
         <div className="qrcode-page">
-          <QRCodeGenerator eventId={eventId} />
+          <QRCodeGenerator eventId={WEDDING_EVENT_ID} />
           <button 
             className="btn btn-secondary"
             onClick={() => setCurrentPage('home')}
@@ -73,7 +67,7 @@ function App() {
       {currentPage === 'upload' && (
         <div className="upload-page">
           <PhotoUpload 
-            eventId={eventId} 
+            eventId={WEDDING_EVENT_ID} 
             userId={uniqueUserId}
             onUploadSuccess={() => setCurrentPage('gallery')}
           />
@@ -88,7 +82,7 @@ function App() {
 
       {currentPage === 'gallery' && (
         <div className="gallery-page">
-          <PhotoGallery eventId={eventId} userId={uniqueUserId} />
+          <PhotoGallery eventId={WEDDING_EVENT_ID} userId={uniqueUserId} />
           <button 
             className="btn btn-secondary"
             onClick={() => setCurrentPage('home')}
