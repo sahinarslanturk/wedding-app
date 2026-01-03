@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.local
+.firebase-key.json
+firebase-key.json
+data.json
+.DS_Store
+*.log
+.vscode/settings.json

@@ -1,0 +1,30 @@
+{
+  "name": "wedding-photo-sharing-app",
+  "version": "1.0.0",
+  "description": "Düğün fotoğraf paylaşım uygulaması - QR kod ile erişim",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install",
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "start": "npm --prefix backend start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "wedding",
+    "photo",
+    "sharing",
+    "qr-code",
+    "react",
+    "firebase"
+  ],
+  "author": "Copilot",
+  "license": "MIT"
+}

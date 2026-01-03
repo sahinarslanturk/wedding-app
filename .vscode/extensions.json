@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "msjsdiag.debugger-for-chrome",
+    "ms-vscode.js-debug-nightly",
+    "formulahendry.code-runner",
+    "GitLab.gitlab-workflow",
+    "ms-vscode-remote.remote-ssh",
+    "firebase.firebase",
+    "React.react-tools"
+  ]
+}

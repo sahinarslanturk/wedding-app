@@ -1,0 +1,104 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import QRCodeGenerator from './components/QRCodeGenerator';
+import PhotoUpload from './components/PhotoUpload';
+import PhotoGallery from './components/PhotoGallery';
+
+function App() {
+  const [eventId, setEventId] = useState('');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [uniqueUserId, setUniqueUserId] = useState('');
+
+  useEffect(() => {
+    // Create or get unique user ID from localStorage
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userId', userId);
+    }
+    setUniqueUserId(userId);
+
+    // Get event ID from URL params if available
+    const params = new URLSearchParams(window.location.search);
+    const urlEventId = params.get('event');
+    if (urlEventId) {
+      setEventId(urlEventId);
+      setCurrentPage('upload');
+    }
+  }, []);
+
+  return (
+    <div className="App">
+      <header className="app-header">
+        <h1>💒 Wedding Photo Share</h1>
+      </header>
+
+      {currentPage === 'home' && (
+        <div className="home-page">
+          <div className="button-group">
+            <button 
+              className="btn btn-primary"
+              onClick={() => setCurrentPage('qrcode')}
+            >
+              📱 QR Kodu Göster
+            </button>
+            <button 
+              className="btn btn-success"
+              onClick={() => setCurrentPage('upload')}
+            >
+              📸 Fotoğraf Yükle
+            </button>
+            <button 
+              className="btn btn-info"
+              onClick={() => setCurrentPage('gallery')}
+            >
+              🖼️ Galeriye Bak
+            </button>
+          </div>
+        </div>
+      )}
+
+      {currentPage === 'qrcode' && (
+        <div className="qrcode-page">
+          <QRCodeGenerator eventId={eventId} />
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage('home')}
+          >
+            ← Geri
+          </button>
+        </div>
+      )}
+
+      {currentPage === 'upload' && (
+        <div className="upload-page">
+          <PhotoUpload 
+            eventId={eventId} 
+            userId={uniqueUserId}
+            onUploadSuccess={() => setCurrentPage('gallery')}
+          />
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage('home')}
+          >
+            ← Geri
+          </button>
+        </div>
+      )}
+
+      {currentPage === 'gallery' && (
+        <div className="gallery-page">
+          <PhotoGallery eventId={eventId} userId={uniqueUserId} />
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage('home')}
+          >
+            ← Geri
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
