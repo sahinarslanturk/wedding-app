@@ -65,13 +65,20 @@ const PhotoUpload = ({ eventId, userId, onUploadSuccess }) => {
       setPreview(null);
       setCaption('');
 
+      // 2 saniye sonra galeriye otomatik git
       setTimeout(() => {
         setSuccess(false);
         onUploadSuccess?.();
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Fotoğraf yükleme başarısız oldu');
-      console.error('Upload error:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Fotoğraf yükleme başarısız oldu';
+      setError(`❌ Hata: ${errorMessage}`);
+      console.error('Upload error details:', {
+        status: err.response?.status,
+        message: err.message,
+        data: err.response?.data,
+        url: `${apiUrl}/api/upload`
+      });
     } finally {
       setUploading(false);
     }

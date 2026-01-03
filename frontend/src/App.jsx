@@ -24,7 +24,13 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>💒 Wedding Photo Share</h1>
+        <h1 
+          style={{ cursor: 'pointer' }}
+          onClick={() => setCurrentPage('home')}
+          title="Ana sayfaya dön"
+        >
+          💒 Wedding Photo Share
+        </h1>
       </header>
 
       {currentPage === 'home' && (

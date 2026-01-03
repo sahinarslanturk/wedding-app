@@ -27,8 +27,14 @@ const PhotoGallery = ({ eventId, userId }) => {
       setPhotos(response.data.photos || []);
       setError('');
     } catch (err) {
-      setError('Fotoğraflar yüklenemedi');
-      console.error('Fetch error:', err);
+      const errorMsg = err.response?.data?.message || err.message || 'Fotoğraflar yüklenemedi';
+      setError(`❌ Hata: ${errorMsg}`);
+      console.error('Fetch error details:', {
+        status: err.response?.status,
+        message: err.message,
+        data: err.response?.data,
+        url: `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/photos/${eventId}`
+      });
     } finally {
       setLoading(false);
     }
@@ -69,6 +75,16 @@ const PhotoGallery = ({ eventId, userId }) => {
   return (
     <div className="gallery-container">
       <h2>🖼️ Fotoğraf Galerisi</h2>
+
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+        <button 
+          onClick={fetchPhotos}
+          className="btn btn-secondary"
+          style={{ minWidth: '100px' }}
+        >
+          🔄 Yenile
+        </button>
+      </div>
 
       {error && <div className="alert alert-error">{error}</div>}
 
