@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './PhotoGallery.css';
 
 const PhotoGallery = ({ eventId, userId }) => {
@@ -13,7 +12,7 @@ const PhotoGallery = ({ eventId, userId }) => {
     fetchPhotos();
   }, [eventId]);
 
-  const fetchPhotos = async () => {
+  const fetchPhotos = () => {
     if (!eventId) {
       setError('Düğün ID\'si bulunamadı');
       setLoading(false);
@@ -22,18 +21,18 @@ const PhotoGallery = ({ eventId, userId }) => {
 
     try {
       setLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await axios.get(`${apiUrl}/api/photos/${eventId}`);
-      setPhotos(response.data.photos || []);
+      // LocalStorage'tan fotoğrafları oku
+      const allPhotos = JSON.parse(localStorage.getItem('weddingPhotos') || '[]');
+      // Sadece bu event'in fotoğraflarını filtrele
+      const eventPhotos = allPhotos.filter(p => p.eventId === eventId);
+      setPhotos(eventPhotos);
       setError('');
     } catch (err) {
-      const errorMsg = err.response?.data?.message || err.message || 'Fotoğraflar yüklenemedi';
+      const errorMsg = err.message || 'Fotoğraflar yüklenemedi';
       setError(`❌ Hata: ${errorMsg}`);
       console.error('Fetch error details:', {
-        status: err.response?.status,
         message: err.message,
-        data: err.response?.data,
-        url: `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/photos/${eventId}`
+        stack: err.stack
       });
     } finally {
       setLoading(false);
@@ -46,20 +45,24 @@ const PhotoGallery = ({ eventId, userId }) => {
 
   const userIds = [...new Set(photos.map(p => p.userId))];
 
-  const handleDelete = async (photoId) => {
+  const handleDelete = (photoId) => {
     if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) {
       return;
     }
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      await axios.delete(`${apiUrl}/api/photos/${photoId}`, {
-        data: { userId }
-      });
+      // LocalStorage'tan fotoğrafları oku
+      const allPhotos = JSON.parse(localStorage.getItem('weddingPhotos') || '[]');
+      // Fotoğrafı sil
+      const updatedPhotos = allPhotos.filter(p => p.id !== photoId);
+      // LocalStorage'a kaydet
+      localStorage.setItem('weddingPhotos', JSON.stringify(updatedPhotos));
+      // UI'ı güncelle
       setPhotos(photos.filter(p => p.id !== photoId));
       setSelectedPhoto(null);
+      alert('✓ Fotoğraf başarıyla silindi');
     } catch (err) {
-      alert('Silme işlemi başarısız oldu');
+      alert('❌ Silme işlemi başarısız oldu: ' + err.message);
     }
   };
 

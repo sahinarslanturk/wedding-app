@@ -12,7 +12,7 @@
     "react-dom": "^18.2.0",
     "qr-code-styling": "^1.5.1",
     "html5-qrcode": "^2.3.4",
-    "axios": "^1.6.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
